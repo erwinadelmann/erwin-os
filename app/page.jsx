@@ -12,6 +12,8 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [resetMode, setResetMode] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -19,6 +21,18 @@ function Login({ onLogin }) {
     setError('')
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) setError('E-Mail oder Passwort falsch.')
+    setLoading(false)
+  }
+
+  const handleReset = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin
+    })
+    if (error) setError('Fehler beim Senden. E-Mail prüfen.')
+    else setResetSent(true)
     setLoading(false)
   }
 
@@ -32,22 +46,53 @@ function Login({ onLogin }) {
             style={{ width: 56, height: 56, borderRadius: 12, objectFit: 'cover', marginBottom: 16 }}
           />
           <h1 className="text-2xl font-bold" style={{ color: '#00a89a' }}>ERWIN OS</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Persönliches Entwicklungssystem</p>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+            {resetMode ? 'Passwort zurücksetzen' : 'Persönliches Entwicklungssystem'}
+          </p>
         </div>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="text-sm block mb-1" style={{ color: 'var(--text-muted)' }}>E-Mail</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="input" placeholder="erwin@mentaltraining.at" required />
+
+        {resetSent ? (
+          <div className="text-center space-y-4">
+            <div style={{ color: '#22c55e', fontSize: 32 }}>✓</div>
+            <p className="text-base" style={{ color: 'var(--text)' }}>E-Mail gesendet!</p>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Prüfe dein Postfach bei <strong>{email}</strong> und klicke den Link.</p>
+            <button onClick={() => { setResetMode(false); setResetSent(false) }} className="btn-ghost w-full">
+              Zurück zum Login
+            </button>
           </div>
-          <div>
-            <label className="text-sm block mb-1" style={{ color: 'var(--text-muted)' }}>Passwort</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="input" placeholder="••••••••" required />
-          </div>
-          {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
-          <button type="submit" className="btn-primary w-full mt-2" disabled={loading}>
-            {loading ? 'Anmelden...' : 'Anmelden'}
-          </button>
-        </form>
+        ) : resetMode ? (
+          <form onSubmit={handleReset} className="space-y-4">
+            <div>
+              <label className="text-sm block mb-1" style={{ color: 'var(--text-muted)' }}>E-Mail</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="input" placeholder="erwin@mentaltraining.at" required />
+            </div>
+            {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
+            <button type="submit" className="btn-primary w-full" disabled={loading}>
+              {loading ? 'Senden...' : 'Reset-Link senden'}
+            </button>
+            <button type="button" onClick={() => setResetMode(false)} className="btn-ghost w-full">
+              Zurück zum Login
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="text-sm block mb-1" style={{ color: 'var(--text-muted)' }}>E-Mail</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="input" placeholder="erwin@mentaltraining.at" required />
+            </div>
+            <div>
+              <label className="text-sm block mb-1" style={{ color: 'var(--text-muted)' }}>Passwort</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="input" placeholder="••••••••" required />
+            </div>
+            {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
+            <button type="submit" className="btn-primary w-full" disabled={loading}>
+              {loading ? 'Anmelden...' : 'Anmelden'}
+            </button>
+            <button type="button" onClick={() => { setResetMode(true); setError('') }} className="btn-ghost w-full text-sm">
+              Passwort vergessen?
+            </button>
+          </form>
+        )}
       </div>
     </div>
   )
