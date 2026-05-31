@@ -3,27 +3,74 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
-const TABS = ['Dashboard', 'Entwicklung', 'BWL-Check', 'Angebote', 'Zielgruppen', 'KI-Assistent']
+const TABS = ['Dashboard', 'Mindset', 'Entwicklung', 'BWL-Check', 'Angebote', 'Zielgruppen', 'KI-Assistent']
 const GOAL = 3000
 
-// ─── HEADER ──────────────────────────────────────────────────────────────────
-function Header({ activeTab, setActiveTab }) {
+// ─── LOGIN ───────────────────────────────────────────────────────────────────
+function Login({ onLogin }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) setError('E-Mail oder Passwort falsch.')
+    setLoading(false)
+  }
+
   return (
-    <header style={{ background: '#0d1a1a', borderBottom: '1px solid #1f2e2e' }}>
+    <div className="login-screen">
+      <div className="login-card">
+        <div className="flex flex-col items-center mb-8">
+          <img
+            src="https://masterclass.mentaltraining.at/wp-content/uploads/2026/02/cropped-mental-270x270.jpeg"
+            alt="Logo"
+            style={{ width: 56, height: 56, borderRadius: 12, objectFit: 'cover', marginBottom: 16 }}
+          />
+          <h1 className="text-2xl font-bold" style={{ color: '#00a89a' }}>ERWIN OS</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Persönliches Entwicklungssystem</p>
+        </div>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="text-sm block mb-1" style={{ color: 'var(--text-muted)' }}>E-Mail</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="input" placeholder="erwin@mentaltraining.at" required />
+          </div>
+          <div>
+            <label className="text-sm block mb-1" style={{ color: 'var(--text-muted)' }}>Passwort</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="input" placeholder="••••••••" required />
+          </div>
+          {error && <p className="text-sm" style={{ color: '#f87171' }}>{error}</p>}
+          <button type="submit" className="btn-primary w-full mt-2" disabled={loading}>
+            {loading ? 'Anmelden...' : 'Anmelden'}
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+// ─── HEADER ──────────────────────────────────────────────────────────────────
+function Header({ activeTab, setActiveTab, onLogout }) {
+  return (
+    <header style={{ background: '#0b1515', borderBottom: '1px solid var(--border)' }}>
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between py-3">
           <div className="flex items-center gap-3">
             <img
               src="https://masterclass.mentaltraining.at/wp-content/uploads/2026/02/cropped-mental-270x270.jpeg"
               alt="Mental Training Logo"
-              style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover' }}
+              style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover' }}
             />
             <div>
-              <span className="text-xl font-bold" style={{ color: '#5eead4' }}>ERWIN OS</span>
-              <span className="ml-2 text-xs text-gray-500">mentaltraining.at</span>
+              <span className="text-xl font-bold" style={{ color: '#00a89a' }}>ERWIN OS</span>
+              <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>mentaltraining.at</span>
             </div>
           </div>
-          <div className="text-xs text-gray-600">Erwin Adelmann</div>
+          <button onClick={onLogout} className="btn-ghost text-xs">Abmelden</button>
         </div>
         <nav className="flex gap-1 overflow-x-auto pb-0">
           {TABS.map(tab => (
@@ -369,6 +416,137 @@ function Zielgruppen() {
   )
 }
 
+// ─── MINDSET-ENTWICKLUNG ─────────────────────────────────────────────────────
+function MindsetEntwicklung() {
+  const STUFEN = ['Wissen', 'Verstehen', 'Anwenden', 'Integriert']
+  const BEREICHE = [
+    { id: 'steuerposition', label: 'Steuerposition halten', beschreibung: 'Auch unter Druck in der eigenen Mitte bleiben' },
+    { id: 'wert', label: 'Eigenen Wert kennen', beschreibung: 'Honorarklarheit, kein Rechtfertigen' },
+    { id: 'sichtbarkeit', label: 'Sichtbarkeit als Einladung', beschreibung: 'Sichtbar sein ohne Angriffsfläche-Gefühl' },
+    { id: 'initiative', label: 'Initiative ohne Schuldgefühl', beschreibung: 'Auf Menschen zugehen ohne Verbindungs-Angst' },
+    { id: 'koerper', label: 'Körper als Ressource', beschreibung: 'Embodiment täglich nutzen, nicht nur in Krisen' },
+    { id: 'muster', label: 'Schutzmuster würdigen', beschreibung: 'Alte Muster erkennen ohne sie zu bekämpfen' },
+  ]
+
+  const [stufen, setStufen] = useState(() => {
+    const init = {}
+    BEREICHE.forEach(b => { init[b.id] = 0 })
+    return init
+  })
+  const [eintrag, setEintrag] = useState('')
+  const [eintraege, setEintraege] = useState([
+    { datum: '31.05.2026', text: 'Swish durchgeführt – Ziel-Zustand erarbeitet. Atem frei, Kompetenzgefühl aktiviert.' },
+  ])
+
+  const addEintrag = () => {
+    if (!eintrag.trim()) return
+    const heute = new Date().toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    setEintraege(e => [{ datum: heute, text: eintrag }, ...e])
+    setEintrag('')
+  }
+
+  const stufenFarbe = (s) => ['#4b5563','#60a5fa','#a78bfa','#00a89a'][s]
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-semibold mb-1" style={{ color: 'var(--text)' }}>Mindset-Entwicklung</h2>
+        <p className="text-base" style={{ color: 'var(--text-muted)' }}>Steuerposition nach Dr. Gunter Schmidt – dein inneres Fundament.</p>
+      </div>
+
+      {/* Ziel-Zustand */}
+      <div className="card" style={{ borderColor: '#2d1f4e', borderLeftWidth: 4, borderLeftColor: '#a78bfa' }}>
+        <div className="text-xs mb-2" style={{ color: '#a78bfa' }}>ZIEL-ZUSTAND · NLP Swish · Mai 2026</div>
+        <p className="text-base italic leading-relaxed" style={{ color: 'var(--text)' }}>
+          „Ich stehe mitten im Raum, umringt von Frauen die sehnsüchtig auf mich und meine Produkte gewartet haben. Um mich herum wachsame, starke Löwen die mich schützen. Ich spüre tiefe Verbundenheit mit meinem wahren Selbst, bin unerschütterlich sicher über meinen Wert, habe Honorarklarheit."
+        </p>
+      </div>
+
+      {/* Entwicklungsbereiche */}
+      <div className="card">
+        <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--text)' }}>Entwicklungsbereiche</h3>
+        <div className="text-xs mb-3 flex gap-4" style={{ color: 'var(--text-muted)' }}>
+          {STUFEN.map((s, i) => (
+            <span key={s} className="flex items-center gap-1">
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: stufenFarbe(i), display: 'inline-block' }} />
+              {i+1} {s}
+            </span>
+          ))}
+        </div>
+        <div className="space-y-3">
+          {BEREICHE.map(b => (
+            <div key={b.id}>
+              <div className="flex items-start justify-between gap-4 mb-1">
+                <div>
+                  <div className="text-base font-medium" style={{ color: 'var(--text)' }}>{b.label}</div>
+                  <div className="text-sm" style={{ color: 'var(--text-muted)' }}>{b.beschreibung}</div>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  {STUFEN.map((s, i) => (
+                    <button
+                      key={s}
+                      onClick={() => setStufen(prev => ({ ...prev, [b.id]: i }))}
+                      title={s}
+                      style={{
+                        width: 28, height: 28, borderRadius: 6, fontSize: 12, fontWeight: 600,
+                        background: stufen[b.id] === i ? stufenFarbe(i) : 'var(--bg-input)',
+                        color: stufen[b.id] === i ? 'white' : 'var(--text-muted)',
+                        border: `1px solid ${stufen[b.id] === i ? stufenFarbe(i) : 'var(--border)'}`,
+                        cursor: 'pointer'
+                      }}
+                    >{i+1}</button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ height: 4, background: 'var(--bg-input)', borderRadius: 4, marginTop: 4 }}>
+                <div style={{
+                  height: '100%', borderRadius: 4,
+                  width: `${(stufen[b.id] / 3) * 100}%`,
+                  background: stufenFarbe(stufen[b.id]),
+                  transition: 'width 0.3s, background 0.3s'
+                }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tagesübung */}
+      <div className="card" style={{ borderLeftWidth: 4, borderLeftColor: '#00a89a' }}>
+        <h3 className="text-base font-semibold mb-2" style={{ color: '#00a89a' }}>Tagesübung: Steuerpositions-Unterbrechung</h3>
+        <div className="space-y-1 text-base" style={{ color: 'var(--text-muted)' }}>
+          <div><span style={{ color: '#00a89a' }}>1 · Stopp</span> – bewusste Pause einlegen</div>
+          <div><span style={{ color: '#00a89a' }}>2 · Scan</span> – Was spüre ich? Was denke ich? Was will ich?</div>
+          <div><span style={{ color: '#00a89a' }}>3 · Wahl</span> – Wie handle ich aus meiner Mitte?</div>
+        </div>
+      </div>
+
+      {/* Tagebuch */}
+      <div className="card">
+        <h3 className="text-base font-semibold mb-3" style={{ color: 'var(--text)' }}>Mindset-Tagebuch</h3>
+        <div className="flex gap-2 mb-4">
+          <input
+            value={eintrag}
+            onChange={e => setEintrag(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && addEintrag()}
+            className="input flex-1"
+            placeholder="Erkenntnis, Durchbruch, Beobachtung..."
+          />
+          <button onClick={addEintrag} className="btn-primary px-4">+</button>
+        </div>
+        <div className="space-y-3">
+          {eintraege.map((e, i) => (
+            <div key={i} className="flex gap-3 text-base" style={{ borderTop: i > 0 ? '1px solid var(--border)' : 'none', paddingTop: i > 0 ? 12 : 0 }}>
+              <span className="text-sm shrink-0 mt-0.5" style={{ color: 'var(--text-muted)' }}>{e.datum}</span>
+              <span style={{ color: 'var(--text)' }}>{e.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── PERSÖNLICHE ENTWICKLUNG ─────────────────────────────────────────────────
 function PersoenlicheEntwicklung() {
   const [notiz, setNotiz] = useState('')
@@ -562,6 +740,19 @@ function KIAssistent() {
 export default function ErwinOS() {
   const [activeTab, setActiveTab] = useState('Dashboard')
   const [metrics, setMetrics] = useState([])
+  const [session, setSession] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setAuthLoading(false)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   const loadMetrics = async () => {
     const { data } = await supabase
@@ -572,13 +763,28 @@ export default function ErwinOS() {
     if (data) setMetrics(data)
   }
 
-  useEffect(() => { loadMetrics() }, [])
+  useEffect(() => {
+    if (session) loadMetrics()
+  }, [session])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+  }
+
+  if (authLoading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
+      <div style={{ color: 'var(--text-muted)', fontSize: 15 }}>Laden...</div>
+    </div>
+  )
+
+  if (!session) return <Login onLogin={() => {}} />
 
   return (
-    <div className="min-h-screen" style={{ background: '#0a0f0f' }}>
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} />
       <main className="max-w-5xl mx-auto px-4 py-8">
         {activeTab === 'Dashboard'   && <Dashboard metrics={metrics} />}
+        {activeTab === 'Mindset'     && <MindsetEntwicklung />}
         {activeTab === 'Entwicklung' && <PersoenlicheEntwicklung />}
         {activeTab === 'BWL-Check'   && <BWLCheck metrics={metrics} onSave={loadMetrics} />}
         {activeTab === 'Angebote'    && <Angebote />}
