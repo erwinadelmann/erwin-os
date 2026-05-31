@@ -11,10 +11,17 @@ function Header({ activeTab, setActiveTab }) {
   return (
     <header style={{ background: '#0d1a1a', borderBottom: '1px solid #1f2e2e' }}>
       <div className="max-w-5xl mx-auto px-4">
-        <div className="flex items-center justify-between py-4">
-          <div>
-            <span className="text-xl font-bold" style={{ color: '#5eead4' }}>ERWIN OS</span>
-            <span className="ml-2 text-xs text-gray-500">mentaltraining.at</span>
+        <div className="flex items-center justify-between py-3">
+          <div className="flex items-center gap-3">
+            <img
+              src="https://masterclass.mentaltraining.at/wp-content/uploads/2026/02/cropped-mental-270x270.jpeg"
+              alt="Mental Training Logo"
+              style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover' }}
+            />
+            <div>
+              <span className="text-xl font-bold" style={{ color: '#5eead4' }}>ERWIN OS</span>
+              <span className="ml-2 text-xs text-gray-500">mentaltraining.at</span>
+            </div>
           </div>
           <div className="text-xs text-gray-600">Erwin Adelmann</div>
         </div>
