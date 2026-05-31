@@ -45,7 +45,7 @@ function Login({ onLogin }) {
             alt="Logo"
             style={{ width: 56, height: 56, borderRadius: 12, objectFit: 'cover', marginBottom: 16 }}
           />
-          <h1 className="text-2xl font-bold" style={{ color: '#00a89a' }}>ERWIN OS</h1>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--teal-bright)' }}>ERWIN OS</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             {resetMode ? 'Passwort zurücksetzen' : 'Persönliches Entwicklungssystem'}
           </p>
@@ -99,34 +99,80 @@ function Login({ onLogin }) {
 }
 
 // ─── HEADER ──────────────────────────────────────────────────────────────────
+const OTHER_APPS = [
+  { label: 'ANKER',   url: 'https://app.mentaltraining.at/' },
+  { label: 'Finanzen', url: 'https://finanz-cockpit.mentaltraining.at/' },
+  { label: 'CRM',     url: 'https://crm.mentaltraining.at/' },
+]
+
 function Header({ activeTab, setActiveTab, onLogout }) {
   return (
-    <header style={{ background: '#0b1515', borderBottom: '1px solid var(--border)' }}>
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="flex items-center justify-between py-3">
-          <div className="flex items-center gap-3">
+    <header style={{ background: 'var(--teal-header)', borderBottom: '1px solid var(--border)' }}>
+      <div className="max-w-6xl mx-auto px-4">
+
+        {/* Top bar: Logo + App-Links + Abmelden */}
+        <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid #ffffff12' }}>
+          {/* Logo – klickbar → Dashboard */}
+          <button
+            onClick={() => setActiveTab('Dashboard')}
+            className="flex items-center gap-3"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+          >
             <img
               src="https://masterclass.mentaltraining.at/wp-content/uploads/2026/02/cropped-mental-270x270.jpeg"
               alt="Mental Training Logo"
-              style={{ width: 44, height: 44, borderRadius: 10, objectFit: 'cover' }}
+              style={{ width: 40, height: 40, borderRadius: 9, objectFit: 'cover' }}
             />
-            <div>
-              <span className="text-xl font-bold" style={{ color: '#00a89a' }}>ERWIN OS</span>
-              <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>mentaltraining.at</span>
+            <div className="text-left">
+              <div className="text-lg font-bold" style={{ color: '#fff', lineHeight: 1.2 }}>ERWIN OS</div>
+              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>mentaltraining.at</div>
             </div>
+          </button>
+
+          {/* Other Apps + Logout */}
+          <div className="flex items-center gap-1">
+            {OTHER_APPS.map(app => (
+              <a
+                key={app.label}
+                href={app.url}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  fontSize: 12, padding: '4px 10px', borderRadius: 6,
+                  background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.75)',
+                  textDecoration: 'none', border: '1px solid rgba(255,255,255,0.12)',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.16)'}
+                onMouseLeave={e => e.target.style.background = 'rgba(255,255,255,0.08)'}
+              >
+                {app.label} ↗
+              </a>
+            ))}
+            <button onClick={onLogout} style={{
+              fontSize: 12, padding: '4px 10px', borderRadius: 6, marginLeft: 4,
+              background: 'none', color: 'rgba(255,255,255,0.4)', border: 'none', cursor: 'pointer'
+            }}>
+              Abmelden
+            </button>
           </div>
-          <button onClick={onLogout} className="btn-ghost text-xs">Abmelden</button>
         </div>
-        <nav className="flex gap-1 overflow-x-auto pb-0">
+
+        {/* Tab Navigation */}
+        <nav className="flex gap-0 overflow-x-auto">
           {TABS.map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-3 text-sm whitespace-nowrap transition-colors ${
-                activeTab === tab
-                  ? 'tab-active font-medium'
-                  : 'text-gray-500 hover:text-gray-300'
-              } ${tab === 'KI-Assistent' ? 'opacity-50' : ''}`}
+              style={{
+                padding: '10px 16px', fontSize: 14, whiteSpace: 'nowrap',
+                background: 'none', border: 'none', cursor: 'pointer',
+                borderBottom: activeTab === tab ? '2px solid var(--teal-bright)' : '2px solid transparent',
+                color: activeTab === tab ? 'var(--teal-bright)' : 'rgba(255,255,255,0.55)',
+                fontWeight: activeTab === tab ? 600 : 400,
+                opacity: tab === 'KI-Assistent' ? 0.5 : 1,
+                transition: 'color 0.15s'
+              }}
             >
               {tab === 'KI-Assistent' ? '🔒 ' : ''}{tab}
             </button>

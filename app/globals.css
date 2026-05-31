@@ -3,15 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --teal:       #00a89a;
-  --teal-dark:  #007a6f;
-  --teal-dim:   #00a89a22;
-  --bg:         #080d0d;
-  --bg-card:    #0f1a1a;
-  --bg-input:   #0b1515;
-  --border:     #1a2e2e;
-  --text:       #e8f0ef;
-  --text-muted: #6b8a88;
+  --teal:        #1a7a6e;
+  --teal-bright: #22a99a;
+  --teal-dark:   #155e54;
+  --teal-header: #0e3d38;
+  --teal-dim:    #1a7a6e22;
+  --bg:          #07100f;
+  --bg-card:     #0d1c1a;
+  --bg-input:    #0a1614;
+  --border:      #1a3330;
+  --text:        #e8f0ef;
+  --text-muted:  #6b8a86;
 }
 
 body {
@@ -25,8 +27,8 @@ body {
 h1, h2, h3 { letter-spacing: -0.01em; }
 
 .tab-active {
-  border-bottom: 2px solid var(--teal);
-  color: var(--teal);
+  border-bottom: 2px solid var(--teal-bright);
+  color: var(--teal-bright);
 }
 
 .card {
