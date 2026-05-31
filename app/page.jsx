@@ -548,6 +548,119 @@ function MindsetEntwicklung() {
 }
 
 // ─── PERSÖNLICHE ENTWICKLUNG ─────────────────────────────────────────────────
+const ANKER_URL = 'https://anker.mentaltraining.at'
+
+const KANAELE = [
+  { id: 'linkedin',   label: 'LinkedIn',       gruppe: 'Social',      frequenz: '2×/Woche', typ: 'in' },
+  { id: 'instagram',  label: 'Instagram',      gruppe: 'Social',      frequenz: '3×/Woche', typ: '◈' },
+  { id: 'facebook',   label: 'Facebook',       gruppe: 'Social',      frequenz: '2×/Woche', typ: 'f' },
+  { id: 'youtube',    label: 'YouTube',        gruppe: 'Video/Audio', frequenz: '1×/Woche', typ: '▶' },
+  { id: 'tiktok',     label: 'TikTok/Reels',   gruppe: 'Video/Audio', frequenz: '2×/Woche', typ: '♪' },
+  { id: 'podcast',    label: 'Podcast',        gruppe: 'Video/Audio', frequenz: '1×/Woche', typ: '🎙' },
+  { id: 'newsletter', label: 'Newsletter',     gruppe: 'Direkt',      frequenz: '1×/Woche', typ: '✉' },
+  { id: 'netzwerk',   label: 'Netzwerk',       gruppe: 'Direkt',      frequenz: '3×/Woche', typ: '↗' },
+  { id: 'webseite',   label: 'Webseite',       gruppe: 'Direkt',      frequenz: '1×/Monat', typ: '□' },
+  { id: 'eg',         label: 'Einladung EG',   gruppe: 'Direkt',      frequenz: '2×/Woche', typ: '◎' },
+]
+
+function ContentErinnerungen() {
+  const [letzteAktion, setLetzteAktion] = useState(() => {
+    const init = {}
+    KANAELE.forEach(k => { init[k.id] = null })
+    return init
+  })
+
+  const heute = new Date()
+
+  const tageAlt = (datum) => {
+    if (!datum) return null
+    const diff = Math.floor((heute - new Date(datum)) / (1000 * 60 * 60 * 24))
+    return diff
+  }
+
+  const ampelFarbe = (kanal, tage) => {
+    if (tage === null) return '#4b5563'
+    const limit = kanal.frequenz.includes('Monat') ? 28 : kanal.frequenz.startsWith('3') ? 3 : kanal.frequenz.startsWith('2') ? 4 : 8
+    if (tage <= limit * 0.5) return '#22c55e'
+    if (tage <= limit) return '#fbbf24'
+    return '#ef4444'
+  }
+
+  const markiereHeute = (id) => {
+    setLetzteAktion(prev => ({ ...prev, [id]: heute.toISOString() }))
+  }
+
+  const gruppen = [...new Set(KANAELE.map(k => k.gruppe))]
+
+  return (
+    <div className="card">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-base font-semibold" style={{ color: 'var(--text)' }}>Content-Erinnerungen</h3>
+        <a
+          href={ANKER_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-primary"
+          style={{ fontSize: 13, padding: '0.4rem 1rem', textDecoration: 'none', display: 'inline-block' }}
+        >
+          ANKER öffnen →
+        </a>
+      </div>
+
+      <div className="space-y-4">
+        {gruppen.map(gruppe => (
+          <div key={gruppe}>
+            <div className="text-xs font-semibold mb-2 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{gruppe}</div>
+            <div className="space-y-2">
+              {KANAELE.filter(k => k.gruppe === gruppe).map(kanal => {
+                const tage = tageAlt(letzteAktion[kanal.id])
+                const farbe = ampelFarbe(kanal, tage)
+                return (
+                  <div key={kanal.id} className="flex items-center justify-between gap-3" style={{ padding: '10px 12px', background: 'var(--bg-input)', borderRadius: 8 }}>
+                    <div className="flex items-center gap-3">
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: farbe, display: 'inline-block', flexShrink: 0 }} />
+                      <div>
+                        <span className="text-base font-medium" style={{ color: 'var(--text)' }}>{kanal.label}</span>
+                        <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>{kanal.frequenz}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        {tage === null ? '–' : tage === 0 ? 'heute' : `vor ${tage}d`}
+                      </span>
+                      <button
+                        onClick={() => markiereHeute(kanal.id)}
+                        title="Heute erledigt"
+                        style={{ fontSize: 11, padding: '3px 8px', borderRadius: 6, background: 'var(--bg-card)', color: '#00a89a', border: '1px solid var(--border)', cursor: 'pointer' }}
+                      >
+                        ✓ heute
+                      </button>
+                      <a
+                        href={ANKER_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ fontSize: 11, padding: '3px 8px', borderRadius: 6, background: 'var(--teal-dim)', color: '#00a89a', border: '1px solid #00a89a33', textDecoration: 'none' }}
+                      >
+                        erstellen →
+                      </a>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 flex gap-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+        <span>🟢 aktuell</span>
+        <span>🟡 bald fällig</span>
+        <span>🔴 überfällig</span>
+      </div>
+    </div>
+  )
+}
+
 function PersoenlicheEntwicklung() {
   const [notiz, setNotiz] = useState('')
   const [notizen, setNotizen] = useState([
@@ -635,6 +748,9 @@ function PersoenlicheEntwicklung() {
           ))}
         </div>
       </div>
+
+      {/* Content-Erinnerungen */}
+      <ContentErinnerungen />
 
       {/* Entwicklungsnotizen */}
       <div className="card">
