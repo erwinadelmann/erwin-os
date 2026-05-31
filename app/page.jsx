@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
-const TABS = ['Dashboard', 'BWL-Check', 'Angebote', 'Zielgruppen', 'KI-Assistent']
+const TABS = ['Dashboard', 'Entwicklung', 'BWL-Check', 'Angebote', 'Zielgruppen', 'KI-Assistent']
 const GOAL = 3000
 
 // ─── HEADER ──────────────────────────────────────────────────────────────────
@@ -369,6 +369,122 @@ function Zielgruppen() {
   )
 }
 
+// ─── PERSÖNLICHE ENTWICKLUNG ─────────────────────────────────────────────────
+function PersoenlicheEntwicklung() {
+  const [notiz, setNotiz] = useState('')
+  const [notizen, setNotizen] = useState([
+    { datum: '31.05.2026', modul: 'Session 1', text: 'Swish durchgeführt – Ziel-Zustand erarbeitet, Atem frei, Kompetenzgefühl aktiviert' }
+  ])
+
+  const addNotiz = () => {
+    if (!notiz.trim()) return
+    const heute = new Date().toLocaleDateString('de-AT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    setNotizen(n => [{ datum: heute, modul: 'Notiz', text: notiz }, ...n])
+    setNotiz('')
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-lg font-semibold text-white mb-1">Persönliche Entwicklung</h2>
+        <p className="text-sm text-gray-500">Dein inneres Betriebssystem – Muster, Ziele, Ressourcen.</p>
+      </div>
+
+      {/* Ziel-Zustand */}
+      <div className="card" style={{ borderColor: '#2d1f4e' }}>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: '#a78bfa22', color: '#a78bfa' }}>Ziel-Zustand</span>
+          <span className="text-xs text-gray-600">NLP Swish – Mai 2026</span>
+        </div>
+        <p className="text-sm text-gray-300 leading-relaxed italic">
+          „Ich stehe mitten im Raum, umringt von Frauen die sehnsüchtig auf mich und meine Produkte gewartet haben. Um mich herum wachsame, starke Löwen die mich schützen. Ich spüre tiefe Verbundenheit mit meinem wahren Selbst, bin unerschütterlich sicher über meinen Wert, habe Honorarklarheit."
+        </p>
+      </div>
+
+      {/* Glaubenssätze & Muster */}
+      <div className="card">
+        <h3 className="text-sm font-semibold text-gray-300 mb-3">Aktive Muster</h3>
+        <div className="space-y-3">
+          {[
+            {
+              label: 'Zentraler Glaubenssatz',
+              text: '„Ich bin nicht wertvoll genug, dass man freiwillig dafür zahlt"',
+              color: '#ef4444',
+              hinweis: 'Bereits widerlegt: Honorar wurde bezahlt – Verbindung hat überlebt.'
+            },
+            {
+              label: 'Nervensystem-Muster',
+              text: 'Verbundenheit um jeden Preis – Initiative fühlt sich wie Bedrohung der Beziehung an',
+              color: '#fb923c',
+              hinweis: 'Steuerposition-Arbeit: Verbindung und Eigeninitiative schließen sich nicht aus.'
+            },
+            {
+              label: 'Loyalitätssystem',
+              text: '„Wer Geld nimmt für Hilfe ist ein Hausierer" – Ahnen-Regel als Identitätsanker',
+              color: '#fbbf24',
+              hinweis: 'Aufstellungsarbeit nach Dr. Langlotz läuft.'
+            },
+            {
+              label: 'Erfolgs-Blockade',
+              text: 'Sichtbarkeit = Angriffsfläche (reale Erfahrung mit Sabotage durch Psychologin)',
+              color: '#60a5fa',
+              hinweis: 'Würdigung: Das war echte Erfahrung. Heute: nicht alle sind so.'
+            },
+          ].map(m => (
+            <div key={m.label} style={{ borderLeft: `3px solid ${m.color}33`, paddingLeft: 12 }}>
+              <div className="text-xs text-gray-500 mb-0.5">{m.label}</div>
+              <div className="text-sm text-gray-300 italic mb-1">{m.text}</div>
+              <div className="text-xs" style={{ color: m.color + 'cc' }}>→ {m.hinweis}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Ressourcen */}
+      <div className="card">
+        <h3 className="text-sm font-semibold text-gray-300 mb-3">Ressourcen</h3>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            'Aufstellungsarbeit nach Dr. Langlotz',
+            'NLP-Kompetenz (Swish, Ankertechnik)',
+            'Bereits Honorar erhalten – Verbindung hat überlebt',
+            'Tiefe Selbstkenntnis & Fähigkeit zur Ehrlichkeit',
+          ].map(r => (
+            <div key={r} className="flex items-start gap-2 text-sm text-gray-400">
+              <span style={{ color: '#5eead4', marginTop: 2 }}>✓</span>
+              <span>{r}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Entwicklungsnotizen */}
+      <div className="card">
+        <h3 className="text-sm font-semibold text-gray-300 mb-3">Entwicklungsnotizen</h3>
+        <div className="flex gap-2 mb-4">
+          <input
+            value={notiz}
+            onChange={e => setNotiz(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && addNotiz()}
+            className="input flex-1"
+            placeholder="Neue Erkenntnis eintragen..."
+          />
+          <button onClick={addNotiz} className="btn-primary px-4">+</button>
+        </div>
+        <div className="space-y-2">
+          {notizen.map((n, i) => (
+            <div key={i} className="flex gap-3 text-sm" style={{ borderTop: i > 0 ? '1px solid #1f2e2e' : 'none', paddingTop: i > 0 ? 8 : 0 }}>
+              <span className="text-gray-600 whitespace-nowrap text-xs mt-0.5">{n.datum}</span>
+              <span className="text-xs px-2 py-0.5 rounded-full self-start whitespace-nowrap" style={{ background: '#5eead422', color: '#5eead4' }}>{n.modul}</span>
+              <span className="text-gray-400">{n.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── KI-ASSISTENT (GESPERRT) ──────────────────────────────────────────────────
 function KIAssistent() {
   const mockMessages = [
@@ -462,7 +578,8 @@ export default function ErwinOS() {
     <div className="min-h-screen" style={{ background: '#0a0f0f' }}>
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       <main className="max-w-5xl mx-auto px-4 py-8">
-        {activeTab === 'Dashboard'    && <Dashboard metrics={metrics} />}
+        {activeTab === 'Dashboard'   && <Dashboard metrics={metrics} />}
+        {activeTab === 'Entwicklung' && <PersoenlicheEntwicklung />}
         {activeTab === 'BWL-Check'   && <BWLCheck metrics={metrics} onSave={loadMetrics} />}
         {activeTab === 'Angebote'    && <Angebote />}
         {activeTab === 'Zielgruppen' && <Zielgruppen />}
