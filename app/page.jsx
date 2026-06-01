@@ -100,9 +100,10 @@ function Login({ onLogin }) {
 
 // ─── HEADER ──────────────────────────────────────────────────────────────────
 const OTHER_APPS = [
-  { label: 'ANKER',   url: 'https://app.mentaltraining.at/' },
+  { label: 'App',      url: 'https://app.mentaltraining.at/' },
+  { label: 'ANKER',    url: 'https://anker.mentaltraining.at/' },
   { label: 'Finanzen', url: 'https://finanz-cockpit.mentaltraining.at/' },
-  { label: 'CRM',     url: 'https://crm.mentaltraining.at/' },
+  { label: 'CRM',      url: 'https://crm.mentaltraining.at/' },
 ]
 
 function Header({ activeTab, setActiveTab, onLogout }) {
