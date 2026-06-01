@@ -553,6 +553,61 @@ function MindsetEntwicklung() {
         </p>
       </div>
 
+      {/* Morgenroutine */}
+      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        {/* Banner – Aktivitäten */}
+        <div style={{
+          background: '#111',
+          padding: '14px 28px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '10px 0',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontFamily: 'Georgia, "Times New Roman", serif',
+          letterSpacing: '0.12em',
+          fontSize: '0.72rem',
+          textTransform: 'uppercase',
+          color: '#e8e0d4',
+        }}>
+          {['Gesangsstunden', 'Stimme trainieren', 'Boundless Movement', 'Coaching Tools üben', 'Seminare vorbereiten'].map((item, i, arr) => (
+            <span key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {item}
+              {i < arr.length - 1 && <span style={{ opacity: 0.4 }}>|</span>}
+            </span>
+          ))}
+        </div>
+
+        {/* Fließtext */}
+        <div style={{ padding: '24px 24px 20px' }}>
+          <div className="text-xs font-semibold mb-3" style={{ color: '#a78bfa', letterSpacing: '0.08em' }}>MORGENROUTINE · TÄGLICHES FUNDAMENT</div>
+          <div className="space-y-3 text-base leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            <p>
+              Jeder Morgen beginnt gleich: ein neuer Tag, eine frische Leinwand.
+              Kaffee, Musik, Bewegung – gerade genug, um meine Seele aufzuwecken.
+              Ich dehne mich, atme und schreibe meine Ziele auf wie Gebete.
+              Denn eine Vision für dein Leben zu haben, ist wichtig.
+            </p>
+            <p>
+              Dann geht es ins Fitnessstudio und darum, auf meinen Körper zu achten.
+              Ich lerne, dass dein Körper immer mit dir spricht – und echte Selbstfürsorge
+              nicht nur aus Ruhetagen besteht. Manchmal ist der größte Akt der Selbstachtung,
+              konsequent für sich selbst da zu sein, auch wenn es schwer ist.
+            </p>
+            <p>
+              Nach einer heißen Dusche ziehe ich etwas Bequemes an. Dann esse ich eine einfache Mahlzeit.
+              Um jedem Tag mit Sinn zu begegnen. Irgendwo zwischen 13:00 Uhr und dem Büro,
+              E-Mails beantworten und alles hinter den Kulissen planen.
+            </p>
+            <p className="font-medium" style={{ color: 'var(--text)' }}>
+              Also, wer auch immer das heute hören muss:<br />
+              Glaube einfach daran. Mach weiter.<br />
+              Du bist näher dran, als du denkst.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Entwicklungsbereiche */}
       <div className="card">
         <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--text)' }}>Entwicklungsbereiche</h3>
