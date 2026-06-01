@@ -583,7 +583,7 @@ function MindsetEntwicklung() {
           <div className="text-xs font-semibold mb-3" style={{ color: '#a78bfa', letterSpacing: '0.08em' }}>MORGENROUTINE · TÄGLICHES FUNDAMENT</div>
           <div className="space-y-3 text-base leading-relaxed" style={{ color: 'var(--text-muted)' }}>
             <p>
-              Jeder Morgen beginnt gleich: ein neuer Tag, eine frische Leinwand.
+              Jeden Morgen beginnt ein neuer Tag, eine frische Leinwand.
               Kaffee, Musik, Bewegung – gerade genug, um meine Seele aufzuwecken.
               Ich dehne mich, atme und schreibe meine Ziele auf wie Gebete.
               Denn eine Vision für dein Leben zu haben, ist wichtig.
