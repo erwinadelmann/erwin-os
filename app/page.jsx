@@ -509,6 +509,13 @@ function Zielgruppen() {
 }
 
 // ─── MINDSET-ENTWICKLUNG ─────────────────────────────────────────────────────
+const SPRUECHE = [
+  {
+    text: 'Deine Intuition (Embodiment) hat dir schon gesagt, was du tun sollst.\nAlles andere sind noch Verhandlungen mit deiner Angst.',
+    quelle: 'ERWIN OS',
+  },
+]
+
 function MindsetEntwicklung() {
   const STUFEN = ['Wissen', 'Verstehen', 'Anwenden', 'Integriert']
   const BEREICHE = [
@@ -666,6 +673,19 @@ function MindsetEntwicklung() {
           <div><span style={{ color: '#00a89a' }}>2 · Scan</span> – Was spüre ich? Was denke ich? Was will ich?</div>
           <div><span style={{ color: '#00a89a' }}>3 · Wahl</span> – Wie handle ich aus meiner Mitte?</div>
         </div>
+      </div>
+
+      {/* Impulse & Sprüche */}
+      <div className="space-y-3">
+        {SPRUECHE.map((s, i) => (
+          <div key={i} className="card" style={{ borderLeftWidth: 4, borderLeftColor: '#a78bfa', background: '#1a1030' }}>
+            <div className="text-xs font-semibold mb-2" style={{ color: '#a78bfa', letterSpacing: '0.08em' }}>IMPULS</div>
+            <p className="text-base italic leading-relaxed whitespace-pre-line" style={{ color: 'var(--text)' }}>
+              „{s.text}"
+            </p>
+            {s.quelle && <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>— {s.quelle}</p>}
+          </div>
+        ))}
       </div>
 
       {/* Tagebuch */}
